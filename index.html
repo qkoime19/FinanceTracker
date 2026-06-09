@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinanceTracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap nav">
+    <div class="brand">
+      <div class="logo">₿</div>
+      <span>FinanceTracker</span>
+    </div>
+
+    <nav class="links" aria-label="Основна навигация">
+      <a href="#expenses">Разходи</a>
+      <a href="#statistics">Статистика</a>
+      <a href="#budget">Бюджет</a>
+      <a href="#notes">Бележки</a>
+    </nav>
+
+    <button class="ghost-btn" id="themeBtn" type="button">🌙 Тъмна тема</button>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div class="hero-card">
+      <span class="eyebrow">💸 Личен бюджет • expenses app</span>
+      <h1>Следи разходите си ясно и подредено.</h1>
+      <p>
+        FinanceTracker е малко уеб приложение за добавяне, проверка и анализ на разходи.
+        Има форма с validation, списък с разходи, месечен бюджет, похарчена сума,
+        оставащи пари, статистика, категории и localStorage запис.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn" href="#expenses">➕ Добави разход</a>
+        <button class="btn secondary" id="sampleBtn" type="button">✨ Добави примерни данни</button>
+      </div>
+    </div>
+
+    <aside class="hero-side" aria-label="Обобщение">
+      <div class="mini-card">
+        <div class="label">Месечен бюджет</div>
+        <div class="amount" id="heroBudget">0.00 €.</div>
+        <span class="pill">Задава се от секция „Бюджет“</span>
+      </div>
+
+      <div class="mini-card">
+        <div class="label">Похарчено този месец</div>
+        <div class="amount bad" id="heroSpent">0.00 €.</div>
+        <p class="note" id="heroRemaining">Оставащо: 0.00 €.</p>
+      </div>
+
+      <div class="mini-card">
+        <div class="label">Най-голям разход</div>
+        <div class="amount" id="heroBiggest">-</div>
+        <p class="note" id="heroBiggestMeta">Все още няма добавени разходи.</p>
+      </div>
+    </aside>
+  </section>
+
+  <section class="wrap grid" id="expenses">
+    <aside class="panel">
+      <h2>Добавяне на нов разход</h2>
+
+      <div id="errorBox" class="error"></div>
+      <div id="successBox" class="success"></div>
+
+      <form id="expenseForm" class="form-grid" novalidate>
+        <div class="field">
+          <label for="expenseName">Име на разхода</label>
+          <input id="expenseName" name="expenseName" placeholder="пример: Храна, ток, транспорт" />
+        </div>
+
+        <div class="field">
+          <label for="expenseCategory">Категория</label>
+          <select id="expenseCategory" name="expenseCategory">
+            <option value="Храна">Храна</option>
+            <option value="Дом">Дом</option>
+            <option value="Транспорт">Транспорт</option>
+            <option value="Забавления">Забавления</option>
+            <option value="Образование">Образование</option>
+            <option value="Здраве">Здраве</option>
+            <option value="Друго">Друго</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="expenseAmount">Сума</label>
+          <input id="expenseAmount" name="expenseAmount" inputmode="decimal" placeholder="пример: 25.50" />
+        </div>
+
+        <div class="field">
+          <label for="expenseDate">Дата</label>
+          <input id="expenseDate" name="expenseDate" type="date" />
+        </div>
+
+        <div class="field">
+          <label for="expenseDescription">Описание</label>
+          <textarea id="expenseDescription" name="expenseDescription" placeholder="Кратка бележка към разхода..."></textarea>
+        </div>
+
+        <button class="btn" type="submit">Добави разход</button>
+      </form>
+    </aside>
+
+    <div>
+      <div class="stats" id="statistics">
+        <article class="stat">
+          <span class="label">Месечен бюджет</span>
+          <strong id="budgetStat">0.00 €.</strong>
+        </article>
+
+        <article class="stat">
+          <span class="label">Похарчено</span>
+          <strong id="spentStat">0.00 €.</strong>
+        </article>
+
+        <article class="stat">
+          <span class="label">Остава</span>
+          <strong id="remainingStat">0.00 €.</strong>
+        </article>
+
+        <article class="stat">
+          <span class="label">Брой разходи</span>
+          <strong id="countStat">0</strong>
+        </article>
+
+        <article class="stat">
+          <span class="label">Средно</span>
+          <strong id="avgStat">0.00 €.</strong>
+        </article>
+
+        <article class="stat">
+          <span class="label">Категории</span>
+          <strong id="catStat">0</strong>
+        </article>
+      </div>
+
+      <section class="panel">
+        <div class="controls">
+          <h2 style="margin:0">Списък с разходи</h2>
+
+          <div class="row">
+            <input class="search" id="searchInput" placeholder="Търси по име, категория или описание..." />
+
+            <select class="filter" id="categoryFilter">
+              <option value="all">Всички категории</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="expense-list" id="expenseList"></div>
+      </section>
+    </div>
+  </section>
+
+  <section class="wrap sections">
+    <article class="panel">
+      <h2>Разходи по категории</h2>
+      <div class="bars" id="categoryBars"></div>
+    </article>
+
+    <article class="panel" id="budget">
+      <h2>Месечен бюджет</h2>
+
+      <div class="budget-box">
+        <p class="note">
+          Задай лимит и следи колко от бюджета е използван. Данните се пазят в браузъра.
+        </p>
+
+        <div class="row">
+          <input class="search" id="budgetInput" inputmode="decimal" placeholder="пример: 600" />
+          <button class="small-btn" id="saveBudget" type="button">Запази бюджет</button>
+        </div>
+
+        <div class="progress">
+          <span id="budgetProgress"></span>
+        </div>
+
+        <strong id="budgetText">Няма зададен бюджет.</strong>
+      </div>
+    </article>
+  </section>
+
+  <section class="wrap sections" style="padding-top:22px;padding-bottom:54px">
+    <article class="panel" id="notes">
+      <h2>Бележки</h2>
+
+      <textarea
+        id="notesArea"
+        class="search"
+        style="min-height:138px;resize:vertical"
+        placeholder="Напиши си кратки финансови бележки..."
+      ></textarea>
+
+      <div class="row notes-actions">
+        <button class="small-btn" id="saveNotes" type="button">Запази бележката</button>
+        <button class="small-btn danger-soft" id="clearNotes" type="button">Изчисти</button>
+        <span class="note-status" id="notesStatus">Няма нови промени.</span>
+      </div>
+
+      <p class="note">Бележките се записват локално в браузъра, когато натиснеш бутона.</p>
+    </article>
+
+    <article class="panel">
+      <h2>Project checklist</h2>
+      <p class="note">
+        Включени са основните неща от задачите: semantic layout, ясни класове,
+        responsive дизайн, expense form, expense list, statistics section,
+        monthly budget, spent amount, remaining amount, validation, dark mode,
+        refactoring-friendly JavaScript и работа с масив от разходи.
+      </p>
+
+      <p class="note">
+        За debug можеш да отвориш <span class="kbd">F12</span> → Console.
+        При добавяне на разход приложението логва текущия масив и total.
+      </p>
+    </article>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    FinanceTracker • статичен HTML/CSS/JavaScript проект • данните се пазят с localStorage
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
