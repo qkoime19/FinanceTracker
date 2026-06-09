@@ -62,7 +62,7 @@ Prompt B: "Създай Family Budget App със semantic HTML, responsive dashb
 
 ## Debugging workflow
 
-1. Проверка за syntax errors с `node --check script.js`.
+1. Проверка за syntax errors с `node --check app.js`.
 2. Тестване на validation с празни полета, текст вместо сума и отрицателни стойности.
 3. Добавяне на разходи и приходи с различни стойности.
 4. Проверка на total expenses, total income и balance.
