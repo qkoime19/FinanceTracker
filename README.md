@@ -1,2 +1,2 @@
 # FinanceTracker
-dai_pak
+Trcker for finance
