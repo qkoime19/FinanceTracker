@@ -554,7 +554,7 @@
   function formatMoney(value) {
     return Number(value || 0).toLocaleString('bg-BG', {
       style: 'currency',
-      currency: 'BGN',
+      currency: 'EUR',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
